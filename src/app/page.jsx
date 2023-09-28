@@ -21,7 +21,7 @@ export default function Home() {
     function success(result) {
       scanner.clear();
       setScanResult(result);
-      console.log(result);
+     window.location.href = result;
     }
 
     function error(err) {
