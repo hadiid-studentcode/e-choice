@@ -11,7 +11,7 @@ export default function Home() {
     const scanner = new Html5QrcodeScanner("reader", {
       qrbox: {
         width: 250,
-        height: 250,
+        height: 150,
       },
       fps: 5,
     });
@@ -74,7 +74,7 @@ export default function Home() {
                 <div
                   id="reader"
                   className="text-center mt-12"
-                  style={{ width: "350px", height: "350px" }}
+                 
                 ></div>
            
             </div>
