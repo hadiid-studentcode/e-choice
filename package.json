@@ -13,7 +13,8 @@
     "html5-qrcode": "^2.3.8",
     "next": "latest",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "sweetalert2": "^11.7.31"
   },
   "devDependencies": {
     "autoprefixer": "latest",

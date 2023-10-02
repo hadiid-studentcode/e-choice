@@ -1,8 +1,12 @@
 "use client";
+import Image from "next/image";
 import { supabase } from "../../../../lib/supabaseClient";
 import React, { useState } from "react";
+import Swal from "sweetalert2";
 
-export default function Page({ params }) {
+
+export default  function Page({ params }) {
+
   const products = [
     {
       id: 1,
@@ -117,9 +121,10 @@ export default function Page({ params }) {
     // More products...
   ];
 
-  //  const [checkedItems, setCheckedItems] = useState({});
-  const [voting, setVoting] = useState({});
+const totalCalonFormatur = products.length;
 
+  const [voting, setVoting] = useState({});
+  const [stat, setStat] = useState(0);
 
   const handleCheckboxChange = (event) => {
     const { name, value, checked } = event.target;
@@ -136,21 +141,18 @@ export default function Page({ params }) {
       [`voting${checkedCount}`]: value,
     }));
 
-    const vote = "voting" + checkedCount;
+    const vote = checkedCount;
 
-    console.log(vote);
+    setStat(vote);
+
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     const vote = Object.keys(voting).length;
-    
-
 
     if (vote === 11) {
-
-
       const { data, error } = await supabase
         .from("voting")
 
@@ -170,16 +172,21 @@ export default function Page({ params }) {
           },
         ])
         .select();
-    } else if (vote !== 11) {
-      console.log("tidak valid");
-    }
 
-    //  simpan ke database
-    // nama pemilih
-    // utusan pemilih
-    // nama calon formatur 1 - 9
-    //  tanggal pemilihan
-    //  waktu pemilihan
+         Swal.fire({
+           title: "warning!",
+           text: "Suara Anda Telah Tersimpan!",
+           icon: "info",
+           confirmButtonText: "Simpan",
+         });
+         return addEventListener("click", (e) => {
+        window.location.href = "/";
+         });
+        
+
+
+    } else if (vote !== 11) {
+    }
   };
 
   return (
@@ -191,9 +198,58 @@ export default function Page({ params }) {
               Selamat Datang {params.data[0]} Utusan {params.data[1]}
             </h2>
             <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-              Pilihlah <b className="text-red-500">9 Formatur</b> dari Calon
-              Formatur yang tersedia
+              Pilihlah{" "}
+              <b className="text-red-500">{totalCalonFormatur} Formatur</b> dari
+              Calon Formatur yang tersedia
             </h2>
+            {/* kalkulasi hitungan */}
+            <div className="bg-white py-24 sm:py-32">
+              <div className="mx-auto max-w-7xl px-6 lg:px-8">
+                <dl className="grid grid-cols-1 gap-x-8 gap-y-16 text-center lg:grid-cols-3">
+                  <div
+                    key="1"
+                    className="mx-auto flex max-w-xs flex-col gap-y-4"
+                  >
+                    <dt className="text-base leading-7 text-3xl font-semibold text-black-600">
+                      Total Vote
+                    </dt>
+                    <dd className="order-first text-3xl font-semibold tracking-tight text-gray-900 sm:text-5xl">
+                      {stat}
+                    </dd>
+                  </div>
+                  <div
+                    key="2"
+                    className="mx-auto flex max-w-xs flex-col gap-y-4"
+                  >
+                    <dt className="text-base leading-7 text-3xl font-semibold text-black-600">
+                      Calon Formatur
+                    </dt>
+                    <dd className="order-first text-3xl font-semibold tracking-tight text-gray-900 sm:text-5xl">
+                      {totalCalonFormatur}
+                    </dd>
+                  </div>
+                  <div
+                    key="4"
+                    className="mx-auto flex max-w-xs flex-col gap-y-4"
+                  >
+                    <dt className="text-base leading-7 text-3xl font-semibold text-black-600">
+                      Status
+                    </dt>
+                    {stat === 9 ? (
+                      <dd className="order-first text-3xl font-semibold tracking-tight text-green-900 sm:text-5xl">
+                        Suara Sesuai
+                      </dd>
+                    ) : (
+                      <dd className="order-first text-3xl font-semibold tracking-tight text-red-900 sm:text-5xl">
+                        Suara Tidak Sesuai
+                      </dd>
+                    )}
+                  </div>
+                </dl>
+              </div>
+            </div>
+
+            {/* akhir */}
 
             <div className="mt-6 grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-5 xl:gap-x-8">
               {products.map((product) => (
@@ -212,6 +268,8 @@ export default function Page({ params }) {
                       src={product.imageSrc}
                       alt={product.imageAlt}
                       className="h-full w-full object-cover object-center lg:h-full lg:w-full"
+                      
+                    
                     />
                   </div>
                   <div className="mt-4 flex justify-between">
@@ -233,12 +291,16 @@ export default function Page({ params }) {
             </div>
 
             <div className="text-center">
-              <button
-                type="submit"
-                className=" text-center mt-12 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              >
-                Simpan Hasil Votes
-              </button>
+              {stat === 9 ? (
+                <button
+                  type="submit"
+                  className=" text-center mt-12 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                >
+                  Simpan Hasil Votes
+                </button>
+              ) : (
+                ""
+              )}
             </div>
           </form>
         </div>
